@@ -1,39 +1,76 @@
-# IP-Reputo
- PowerShell script to scan multiple IPs using the VirusTotal API — shows risk scores, country, owner, passive DNS domains, and communicating files. Built for SOC analysts and incident responders. Scan and enrich IPs from logs using VirusTotal — in PowerShell, no Kali needed.
 
+# VirusTotal IP Checker PowerShell Script
 
-# 🔍 VirusTotal IP Intelligence Scanner (PowerShell)
-
-A lightweight PowerShell script for batch scanning multiple IP addresses using the VirusTotal API.  
-Perfect for **SOC analysts**, **threat hunters**, and **incident responders** who want to quickly gather intelligence on suspicious IPs — even in **restricted environments without access to tools like Kali Linux**.
-
----
+This PowerShell script reads a CSV file containing IP addresses, queries the [VirusTotal API](https://www.virustotal.com/), and provides a risk summary of each IP, including malicious/suspicious reports, country, owner, passive DNS domains, and communicating files.
 
 ## 🚀 Features
 
-- ✅ **Batch scan IPs from a CSV file**
-- 📂 **Automatically extracts all IP addresses**, regardless of which column they appear in
-- 🧬 **Pulls VirusTotal intelligence** including:
-  - Malicious & Suspicious scores
-  - Country and ASN owner
-  - Passive DNS (related domains)
-  - Communicating files (malware or artifacts connected to the IP)
-- 🎨 **Color-coded PowerShell output**
-  - 🔴 Risky IPs (Malicious/Suspicious)
-  - 🟢 Safe IPs
-  - 🟡 Owner/Country Info
-  - 🔗 Passive DNS & Files in Cyan
-- 💾 **Optional CSV export** of the full results
-- ⏳ **Rate-limit friendly** (sleep delay added for free VirusTotal API usage)
+- Extracts valid unique IPs from all columns of the provided CSV.
+- Checks IP info using VirusTotal API.
+- Displays:
+  - Malicious and suspicious analysis stats
+  - Country and owner information
+  - Related passive DNS domains
+  - Communicating files (up to 5)
+- Option to save results to a CSV file.
+- Handles API rate limits gracefully.
 
----
-🧪 Sample Command:
+## 📌 Requirements
 
-.\VT_IP_Scanner.ps1 -InputFile "logs.csv"
+- PowerShell 5.1 or higher
+- A valid [VirusTotal API key](https://developers.virustotal.com/reference/getting-started)
 
+## 📝 Usage
 
-Sample output:
+1. **Set your VirusTotal API key**
+   Edit the script and set your API key:
+   ```powershell
+   $apiKey = "YOUR_API_KEY_HERE"
+   ```
 
+2. **Prepare your input CSV**
+   The CSV should contain IP addresses in any column.
+
+3. **Run the script**
+   ```powershell
+   .\YourScriptName.ps1 -InputFile "path\to\input.csv"
+   ```
+
+4. **Choose to save results**
+   The script will prompt:
+   ```
+   Save output to CSV file? (Y/N)
+   ```
+   - `Y`: Results will be saved to a timestamped CSV file.
+   - `N`: Results will only display in the console.
+
+## 📂 Example
+
+```powershell
+.\Check-VT-IPs.ps1 -InputFile "C:\data\ips.csv"
+```
+
+Example prompt:
+```
+Save output to CSV file? (Y/N)
+```
+
+## ⏱ Notes
+
+- The script respects VirusTotal's rate limit with a 15-second delay between IP queries.
+- It saves output CSV as:
+  ```
+  VT_Results_yyyyMMdd_HHmmss.csv
+  ```
+
+## ⚠️ Disclaimer
+
+- This script is for educational and internal use.
+- Make sure your use complies with VirusTotal API terms.
+
+## 🖥 Sample Output (Console)
+
+```
 === Checking IP: 8.8.8.8 ===
 ✅ SAFE : 8.8.8.8 -> Malicious: 0, Suspicious: 0
 🌍 Country : US
@@ -41,4 +78,5 @@ Sample output:
 🔗 Passive DNS (Related Domains):
    • dns.google
 🗂 Communicating Files:
-   • dns_resolver.dll
+   None
+```
